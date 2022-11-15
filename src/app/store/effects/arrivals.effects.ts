@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Actions, createEffect, ofType } from '@ngrx/effects'
-import { catchError, EMPTY, map, mergeMap } from 'rxjs';
+import { catchError, EMPTY, map, mergeMap, of } from 'rxjs';
 
 import { ApiService } from 'src/app/services/api.service';
 
@@ -12,12 +12,11 @@ export class ArrivalsEffects {
         ofType('[Arrivals] Load'),
         mergeMap(() => this.apiService.getArrivials()
                         .pipe(
-                            map( flights => ({type: '[Arrivials] Success', payload: flights })),
-                            catchError(()=> EMPTY)
+                            map( flights => ({type: '[Arrivials] Loaded Success', flightData: flights })),
+                            catchError(()=> of({type: '[Arrivals] Loaded Error', error: true, loading: false}))
             ))
         )         
     );
-
 
     constructor( 
                 private action$: Actions,
